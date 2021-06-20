@@ -1,0 +1,11 @@
+---
+- name: Install required packages
+  pacman:
+    name: "{{ packages }}"
+    state: present
+  become: yes
+  vars:
+    packages:
+      - linux-headers
+  tags:
+    - wg-install

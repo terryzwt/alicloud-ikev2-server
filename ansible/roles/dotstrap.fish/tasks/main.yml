@@ -1,0 +1,19 @@
+---
+
+- name: package | fish
+  package: name="{{ fish_name }}" state="{{ install_state }}"
+  tags:
+    - bootstrap
+    - bootstrap_fish
+    - install
+    - install_fish
+
+- include: "{{ item }}"
+  with_first_found:
+    - "configure_{{ ansible_pkg_mgr }}.yml"
+    - "configure_default.yml"
+  tags:
+    - bootstrap
+    - bootstrap_fish
+    - configure
+    - configure_fish

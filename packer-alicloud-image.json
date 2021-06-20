@@ -1,0 +1,31 @@
+{
+  "variables": {
+    "access_key": "{{env `ALICLOUD_ACCESS_KEY`}}",
+    "secret_key": "{{env `ALICLOUD_SECRET_KEY`}}"
+  },
+  "builders": [{
+    "type":"alicloud-ecs",
+    "access_key":"{{user `access_key`}}",
+    "secret_key":"{{user `secret_key`}}",
+    "region":"us-west-1",
+    "image_name":"packer_ikev2",
+    "source_image":"centos_7_7_x64_20G_alibase_20200220.vhd",
+    "ssh_username":"root",
+    "instance_type":"ecs.xn4.small",
+    "io_optimized":"true",
+    "image_force_delete":"true"
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "inline": [
+      "sleep 30",
+      "yum install redis.x86_64 -y"
+    ]
+  },
+  {
+    "type": "ansible",
+    "playbook_file": "./ansible/ikev2-packer-image-build.yml",
+    "inventory_directory": "./ansible/host_vars"
+  }
+  ]
+}

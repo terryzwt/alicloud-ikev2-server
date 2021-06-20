@@ -1,0 +1,7 @@
+---
+- name: "play 2: Get facts of test71 when operating on test70"
+  hosts: test70
+  remote_user: root
+  tasks:
+  - debug:
+      msg: "{{hostvars}}"

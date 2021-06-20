@@ -1,0 +1,7 @@
+- name: setup | determine shell executable location
+  command: which fish
+  register: fish
+
+- name: configure | change default shell
+  user: name="{{ user_name }}" shell="{{ fish.stdout }}"
+  become: yes

@@ -1,0 +1,56 @@
+---
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - name: Delete local directory
+      file: path=~/Downloads/ikev2-vpn.mobileconfig state=absent
+    - debug: var=ansible_host
+
+- hosts: all
+  remote_user: root
+  vars:
+    ansible_os_family: "RedHat"
+    ansible_distribution: "CentOS"
+    docker_edition: 'ce'
+    docker_package: "docker-{{ docker_edition }}"
+    docker_package_state: present
+    docker_install_compose: true
+    docker_compose_version: "1.25.4"
+    docker_compose_path: /usr/local/bin/docker-compose
+    ansible_user_id: 'root'
+  roles:
+    - githubixx.ansible_role_wireguard
+    - geerlingguy.docker
+    - common
+    - dotstrap.fish
+  tasks:
+  - name: ensure /root/docker/ikev2
+    file:
+      path: /root/docker/ikev2
+      state: directory
+      mode: 0755
+
+  - name: copy docker-compose.yml to remote
+    copy:
+      src: compose/docker-compose.yml
+      dest: /root/docker/ikev2/docker-compose.yml
+
+  - name: run docker-compose ikev2
+    shell: |
+       cd /root/docker/ikev2
+        docker rm $(docker ps -a -q) -f
+        docker-compose up -d
+        sleep 2
+        docker-compose ps
+        docker run --privileged --rm --volumes-from ikev2-vpn-server -e "HOST={{ ansible_host }}" gaomd/ikev2-vpn-server:0.3.0 generate-mobileconfig > ikev2-vpn.mobileconfig
+    args:
+      executable: /bin/bash
+
+  - name: ensure local is empty
+    local_action: file path=~/Downloads/ikev2-vpn.mobileconfig state=absent
+
+  - name: fetch ikev2 config file to local
+    fetch:
+      flat: yes
+      src: /root/docker/ikev2/ikev2-vpn.mobileconfig
+      dest: ~/Downloads/ikev2-vpn.mobileconfig

@@ -1,0 +1,32 @@
+---
+- hosts: all
+  remote_user: root
+  vars:
+    ansible_os_family: "RedHat"
+    ansible_distribution: "CentOS"
+    docker_edition: 'ce'
+    docker_package: "docker-{{ docker_edition }}"
+    docker_package_state: present
+    docker_install_compose: true
+    docker_compose_version: "1.25.4"
+    docker_compose_path: /usr/local/bin/docker-compose
+  tasks:
+  - name: run docker-compose ikev2
+    shell: |
+       cd /root/docker/ikev2
+        docker rm $(docker ps -a -q) -f
+        docker-compose up -d
+        sleep 1
+        docker-compose ps
+        docker run --privileged --rm --volumes-from ikev2-vpn-server -e "HOST={{ ansible_host }}" gaomd/ikev2-vpn-server:0.3.0 generate-mobileconfig > ikev2-vpn.mobileconfig
+    args:
+      executable: /bin/bash
+
+  - name: ensure local is empty
+    local_action: file path=~/Downloads/ikev2-vpn.mobileconfig state=absent
+
+  - name: fetch ikev2 config file to local
+    fetch:
+      flat: yes
+      src: /root/docker/ikev2/ikev2-vpn.mobileconfig
+      dest: ~/Downloads/ikev2-vpn.mobileconfig

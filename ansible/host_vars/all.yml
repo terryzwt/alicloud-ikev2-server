@@ -1,0 +1,6 @@
+all: # keys must be unique, i.e. only one 'hosts' per group
+    hosts:
+        default:
+            wireguard_address: "10.8.0.101/24"
+    vars:
+        group_all_var: value

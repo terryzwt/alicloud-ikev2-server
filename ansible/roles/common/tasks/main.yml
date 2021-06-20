@@ -1,0 +1,50 @@
+---
+# This playbook contains common plays that will be run on all nodes.
+- name: install tree
+  yum:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - tree
+    - git
+    - ntp
+
+- name: Start the ntp service
+  service: name=ntpd state=started enabled=yes
+  tags: ntp
+
+- name: set docker mirror
+  template: src=docker-daemon.json.j2 dest=/etc/docker/daemon.json
+  notify: restart docker
+
+- name: Bash aliases | Add aliases
+  lineinfile:
+    dest: "~/.bash_aliases"
+    create: yes
+    mode: 0644
+    line: 'alias {{ item.alias }}="{{ item.command }}"'
+    regexp: "^alias {{ item.alias }}="
+  with_items:
+    - name: vim alias
+      alias: vi
+      command: vim
+
+- git_config:
+    name: alias.st
+    scope: global
+    value: status
+
+- git_config:
+    name: alias.co
+    scope: global
+    value: checkout
+
+- git_config:
+    name: alias.ci
+    scope: global
+    value: commit
+
+- git_config:
+    name: alias.br
+    scope: global
+    value: branch

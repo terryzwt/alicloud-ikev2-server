@@ -1,0 +1,7 @@
+variables.tf
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+ansible/*.retry
+ansible/fact_files
+ansible/fact_files

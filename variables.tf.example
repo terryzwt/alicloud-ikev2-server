@@ -1,0 +1,70 @@
+provider "alicloud" {
+  access_key = ""
+  secret_key = ""
+  region     = "us-west-1"
+  ecs_role_name = "terraform-build"
+}
+
+variable "ecs_count" {
+  default = "1"
+}
+
+variable "count_format" {
+  default = "%02d"
+}
+
+variable "image_id" {
+  default = "m-rj90zk0tuxf8reu1scdn"
+}
+
+variable "short_name" {
+  default = "tf-created"
+}
+
+variable "ecs_type" {
+  default = "ecs.xn4.small"
+}
+
+variable "ecs_password" {
+  default = "Test12345"
+}
+
+variable "internet_charge_type" {
+  default = "PayByTraffic"
+}
+
+variable "internet_max_bandwidth_out" {
+  default = 30
+}
+
+variable "disk_category" {
+  default = "cloud_efficiency"
+}
+
+variable "disk_size" {
+  default = "40"
+}
+
+variable "disk_count" {
+  default = "0"
+}
+
+variable "nic_type" {
+  default = "intranet"
+}
+
+variable "private_key_file" {
+  default = "alicloud_ssh_key.pem"
+}
+
+variable "public_key" {
+  default = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDH+S7M/5/kModGCFCEPjDTWZvWzFueCFEV1BghRoD06ejVMZH0Wqi8pPNRl79aEEIbRCsgYzn5xqwq8SNaLdhsgu5ZlId1Fv3hEoYZHPpB1l8ACjdW07EQxh29+zopa+YuIPnlVEB8Qrme3CDQf+M/GHCDCBh+/4+YOMPp+d1viy5HE2rUirawoYVA0GD3rtqwn4De4/PQgTo15JIVrpaaX8ZJH6ftVT2wv8Qr3pUP05eqFUA7CkA66tOQA2WacNl5edM8N0pqJAsN3kN+JySJ3e8EGLr3VIK57w1BzwnjZDcBC2MQ6bb+oCAQC3zCM9C0+iY/26dXUZLiwky9XFjt terry@Mac"
+}
+
+variable "key_name" {
+  default = "terry-mac-key"
+}
+
+variable "insecure_no_strict_host_key_checking" {
+  default = "true"
+}
